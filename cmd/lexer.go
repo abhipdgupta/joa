@@ -38,7 +38,10 @@ func (l *Lexer) Lex() {
 		char := input[i]
 
 		switch {
-		case char == '\n':
+		case char == '\n' || char == '\r':
+			if char == '\r' && i+1 < len(input) && input[i+1] == '\n' {
+				i = i + 1
+			}
 			i = i + 1
 			lineNum = lineNum + 1
 		case char == '{':
@@ -177,7 +180,8 @@ func (l *Lexer) Lex() {
 				end:   i,
 			})
 		default:
-			panic("Invalid character")
+			m := fmt.Sprintf("Invalid character %q at Line: %d, Pos: %d", char, lineNum, i)
+			panic(m)
 		}
 	}
 	fmt.Println("Line no", lineNum)
