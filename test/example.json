@@ -1,13 +1,4 @@
-package main
-
-import (
-	"fmt"
-
-	joa "github.com/abhipdgupta/joa/cmd"
-)
-
-func main() {
-	lex := joa.NewLexer(`{
+{
     "id": "usr_102934",
     "username": "abhi_dev",
     "email": "abhi@example.com",
@@ -79,11 +70,4 @@ func main() {
             "power-user"
         ]
     }
-}`)
-
-	lex.Lex()
-
-	for token := range lex.Tokens() {
-		fmt.Println(token)
-	}
 }
