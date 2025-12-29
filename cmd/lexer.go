@@ -162,13 +162,13 @@ func (l *Lexer) Lex() {
 					if isFloat {
 						f, err := strconv.ParseFloat(str, 64)
 						if err != nil {
-							panic("Invalid float")
+							panic("Invalid `float`")
 						}
 						return f
 					} else {
-						in, err := strconv.ParseFloat(str, 64)
+						in, err := strconv.ParseInt(str, 10, 64)
 						if err != nil {
-							panic("Invalid float")
+							panic("Invalid `Integer`")
 						}
 						return in
 					}
