@@ -19,7 +19,12 @@ const (
 	TokenInteger TokenType = "TokenInteger" // a integer
 	TokenFloat   TokenType = "TokenFloat"   // float
 
-	TokenKeyword TokenType = "TokenKeyword" // eg. null, true , false
+	TokenEOF TokenType = "TokenEOF" // end of file
+
+	TokenNull  TokenType = "TokenNull"  // null
+	TokenTrue  TokenType = "TokenTrue"  // true
+	TokenFalse TokenType = "TokenFalse" // false
+
 )
 
 type Token struct {

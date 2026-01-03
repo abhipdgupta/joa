@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"iter"
 	"strconv"
-	"strings"
 )
 
 type Lexer struct {
@@ -38,6 +37,8 @@ func (l *Lexer) Lex() {
 		char := input[i]
 
 		switch {
+		case char == ' ' || char == '\t':
+			i = i + 1
 		case char == '\n' || char == '\r':
 			if char == '\r' && i+1 < len(input) && input[i+1] == '\n' {
 				i = i + 1
@@ -58,7 +59,6 @@ func (l *Lexer) Lex() {
 				end:   i + 1,
 			})
 			i = i + 1
-
 		case char == ':':
 			l.tokens = append(l.tokens, Token{
 				kind:  TokenColon,
@@ -87,10 +87,30 @@ func (l *Lexer) Lex() {
 				end:   i + 1,
 			})
 			i = i + 1
-		case char == ' ':
-			i = i + 1
 		case char == '"':
-			var requirdIndex = strings.Index(input[i+1:], "\"")
+			var requirdIndex int = -1
+			var j int = i + 1
+			for j < len(input) {
+				if input[j] == '\r' && j+1 < len(input) && input[j+1] == '\n' {
+					lineNum = lineNum + 1
+					j = j + 2
+					continue
+				}
+				if input[j] == '\n' {
+					lineNum = lineNum + 1
+					j = j + 1
+					continue
+				}
+				if input[j] == '\\' {
+					j = j + 2
+					continue
+				}
+				if input[j] == '"' {
+					requirdIndex = j - (i + 1)
+					break
+				}
+				j = j + 1
+			}
 			if requirdIndex == -1 {
 				panic("Invalid character at position")
 			}
@@ -109,7 +129,7 @@ func (l *Lexer) Lex() {
 				panic("Invalid character expected null")
 			}
 			l.tokens = append(l.tokens, Token{
-				kind:  TokenKeyword,
+				kind:  TokenNull,
 				data:  strToCheck,
 				start: i,
 				end:   i + 4,
@@ -121,7 +141,7 @@ func (l *Lexer) Lex() {
 				panic("Invalid character expected true")
 			}
 			l.tokens = append(l.tokens, Token{
-				kind:  TokenKeyword,
+				kind:  TokenTrue,
 				data:  strToCheck,
 				start: i,
 				end:   i + 4,
@@ -133,22 +153,35 @@ func (l *Lexer) Lex() {
 				panic("Invalid character expected false")
 			}
 			l.tokens = append(l.tokens, Token{
-				kind:  TokenKeyword,
+				kind:  TokenFalse,
 				data:  strToCheck,
 				start: i,
 				end:   i + 5,
 			})
 			i = i + 5
-		case l.isDigit(char):
+		case char == '-' || l.isDigit(char):
 			var isFloat bool = false
 			var start = i
-			for l.isDigit(input[i]) && i < len(input) {
+			if char == '-' {
+				i = i + 1
+			}
+			for i < len(input) && l.isDigit(input[i]) {
 				i = i + 1
 			}
 			if input[i] == '.' {
 				isFloat = true
 				i = i + 1
-				for l.isDigit(input[i]) && i < len(input) {
+				for i < len(input) && l.isDigit(input[i]) {
+					i = i + 1
+				}
+			}
+			if input[i] == 'e' || input[i] == 'E' {
+				isFloat = true
+				i = i + 1
+				if input[i] == '+' || input[i] == '-' {
+					i = i + 1
+				}
+				for i < len(input) && l.isDigit(input[i]) {
 					i = i + 1
 				}
 			}

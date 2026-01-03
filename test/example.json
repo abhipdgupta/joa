@@ -1,5 +1,5 @@
 {
-    "id": "usr_102934",
+    "id": "usr_102934\ndasdass",
     "username": "abhi_dev",
     "email": "abhi@example.com",
     "isActive": true,
@@ -62,6 +62,14 @@
             "expiresAt": "2025-01-18T19:30:00Z"
         }
     ],
+    "number_in_json":{
+        "integer": 42,
+        "negativeInteger": -7,
+        "float": 3.14159,
+        "negativeFloat": -0.00123,
+        "scientificPositive": 1.2e10,
+        "scientificNegative": -4.5E-8
+    },
     "metadata": {
         "source": "web",
         "referralCode": null,
